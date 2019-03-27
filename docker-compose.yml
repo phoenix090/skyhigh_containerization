@@ -1,0 +1,30 @@
+version: "3"
+services:
+  keystone:
+    build:
+      context: keystone-microservice/keystone/
+      args:
+         KEYSTONE_VERSION: ${KEYSTONE_VERSION}
+         KEYSTONE_REMOTE_DB_PASSWD: ${KEYSTONE_REMOTE_DB_PASSWD}
+    ports:
+      - 5000:5000
+      - 35357:35357
+    volumes:
+      - /var/fernet-keys/:/etc/keystone/fernet-keys/
+    env_file:
+      - .env
+    container_name: keystone
+  memcached:
+    image: memcached:latest
+    ports:
+      - 11211:11211
+    container_name: memcached
+  horizon:
+    build:
+       context: horizon/
+    ports: 
+       - 80:80
+    container_name: horizon
+    depends_on:
+       - keystone
+       - memcached
