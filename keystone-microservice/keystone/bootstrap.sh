@@ -20,7 +20,7 @@ chown keystone:keystone -R /var/lib/keystone/ /etc/keystone/ /etc/keystone/ferne
 chmod 0700 /var/lib/keystone/ /var/log/keystone/ /etc/keystone/ /etc/keystone/fernet-keys/
 
 # Start memcached
-/usr/bin/memcached -u root & >/dev/null || true
+# /usr/bin/memcached -u root & >/dev/null || true
 
 # Populate keystone database
 su -s /bin/sh -c 'keystone-manage db_sync' keystone

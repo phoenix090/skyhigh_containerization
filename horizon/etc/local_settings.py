@@ -94,7 +94,7 @@ OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True
 #    "cloud_admin": "rule:admin_required and domain_id:<your domain id>"
 # This value must be the name of the domain whose ID is specified there.
 OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
-
+OPENSTACK_KEYSTONE_DEFAULT_ROLE = "user"
 # Set this to True to enable panels that provide the ability for users to
 # manage Identity Providers (IdPs) and establish a set of rules to map
 # federation protocol attributes to Identity API attributes.
@@ -158,7 +158,7 @@ SECRET_KEY = secret_key.generate_or_read_from_file('/var/lib/openstack-dashboard
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-       # 'LOCATION': '127.0.0.1:11211',
+        'LOCATION': 'memcached:11211',
     },
 }
 
@@ -187,7 +187,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 OPENSTACK_HOST = "keystone"
 OPENSTACK_KEYSTONE_URL = "http://%s:5000/v3" % OPENSTACK_HOST
-OPENSTACK_KEYSTONE_DEFAULT_ROLE = "_member_"
 
 # For setting the default service region on a per-endpoint basis. Note that the
 # default value for this setting is {}, and below is just an example of how it
@@ -326,8 +325,10 @@ OPENSTACK_NEUTRON_NETWORK = {
     'enable_ipv6': True,
     'enable_distributed_router': False,
     'enable_ha_router': False,
-    'enable_fip_topology_check': True,
-
+    'enable_lb': False,
+    'enable_firewall': False,
+    'enable_vpn': False,
+    'enable_fip_topology_check': False,
     # Default dns servers you would like to use when a subnet is
     # created.  This is only a default, users can still choose a different
     # list of dns servers when creating a new subnet.
@@ -460,7 +461,7 @@ DROPDOWN_MAX_ITEMS = 30
 
 # The timezone of the server. This should correspond with the timezone
 # of your entire OpenStack installation, and hopefully be in UTC.
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Berlin"
 
 # When launching an instance, the menu of available flavors is
 # sorted by RAM usage, ascending. If you would like a different sort order,
@@ -846,7 +847,7 @@ WEBROOT='/horizon/'
 # By default, validation of the HTTP Host header is disabled.  Production
 # installations should have this set accordingly.  For more information
 # see https://docs.djangoproject.com/en/dev/ref/settings/.
-ALLOWED_HOSTS = '*'
+ALLOWED_HOSTS = '[*]'
 
 # Compress all assets offline as part of packaging installation
 COMPRESS_OFFLINE = True

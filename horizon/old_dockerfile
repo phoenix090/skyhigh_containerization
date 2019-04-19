@@ -1,0 +1,39 @@
+FROM ubuntu
+
+ENV OPENSTACK_HOST keystone
+ENV APACHE_PID_FILE /var/run/apache2/apache2.pid
+ENV APACHE_RUN_DIR /var/run/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+
+RUN apt-get update && apt-get install  python-pip python-dev \
+          openstack-dashboard apache2 libapache2-mod-wsgi -y
+# RUN apt-get -y update \
+#    && apt-get install -y apache2 libapache2-mod-wsgi vim curl
+
+# RUN apt-get install -y openstack-dashboard
+
+RUN mkdir -p horizon/etc /var/run/apache2 /var/log/apache2
+#RUN . /etc/apache2/envvars
+WORKDIR /horizon
+COPY etc/* ./etc/
+COPY bootstrap.sh bootstrap.sh
+RUN cp etc/local_settings.py /etc/openstack-dashboard/local_settings.py
+RUN cp etc/openstack-dashboard.conf /etc/apache2/conf-available/openstack-dashboard.conf
+RUN cp etc/apache2.conf /etc/apache2/apache2.conf
+RUN apache2ctl restart
+## RUN apache2ctl start && apache2ctl restart
+# RUN apache2 -S
+
+# RUN ls /etc/apache2/
+# RUN cat /etc/apache2/apache2.conf | grep serverName
+# RUN cat /etc/apache2/apache2.conf | grep APACHE_RUN_DIR 
+# RUN apache2ctl start
+
+#RUN pwd && ls && ls ../
+#CMD sh -x bootstrap.sh
+CMD /usr/sbin/apache2 -DFOREGROUND
+# RUN service apache2 start
+#CMD sh -x /bootstrap.sh

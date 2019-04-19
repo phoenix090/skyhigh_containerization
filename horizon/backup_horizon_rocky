@@ -25,17 +25,15 @@ RUN pip install python-memcached
 # Install horizon with its dependencies
 # RUN ./setup.py
 # Generating Openstack dashboard wsgi- file
-COPY etc/local_settings.py openstack_dashboard/local/local_settings.py
 RUN  ./manage.py collectstatic --noinput && \
      ./manage.py compress --force && \
      ./manage.py make_web_conf --wsgi
 RUN rm -rf /etc/apache2/sites-enabled/* && \
      ./manage.py make_web_conf --apache > /etc/apache2/sites-enabled/horizon.conf
 # COPY etc/apache2.conf /etc/apache2/apache2.conf
+COPY etc/local_settings.py openstack_dashboard/local/local_settings.py
 RUN cp /etc/apache2/sites-enabled/horizon.conf /etc/apache2/sites-available/horizon.conf
 # RUN a2ensite horizon
-RUN chown -R www-data:www-data ${BASEDIR} && \
-python -m compileall $BASEDIR
 RUN apache2ctl restart
 
 # RUN apache2 -S
