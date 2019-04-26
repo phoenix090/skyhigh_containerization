@@ -2,6 +2,8 @@ version: "3"
 services:
   keystone:
     image: 127.0.0.1:5001/keystone
+    deploy:
+      replicas: 3
     build:
       context: keystone-microservice/keystone/
       args:
@@ -20,16 +22,5 @@ services:
     ports:
       - 11211:11211
     container_name: memcached
-    #    deploy:
-    #    # replicas: 3
-#  horizon:
-#    build:
-#       context: horizon/
-#    ports: 
-#       - 80:80
-#    container_name: horizon
-#    depends_on:
-#       - keystone
-#       - memcached
 volumes:
   fernet:
