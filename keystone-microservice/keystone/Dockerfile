@@ -6,9 +6,10 @@ LABEL version="$KEYSTONE_VERSION"
 
 # Apache and mod-wsgi at the front-end for keystone
 # Mysql and other dependencies
-#RUN apt-get update
+# The three lines below are necessary to fetch updates, otherwise error will occur
 RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
 RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
+RUN echo 'Acquire::Check-Valid-Until no;' > /etc/apt/apt.conf.d/99no-check-valid-until
 RUN apt-get -o Acquire::Check-Valid-Until=false update
 RUN apt-get install -y apache2 libapache2-mod-wsgi git\
         libffi-dev python-dev libssl-dev libldap2-dev libsasl2-dev\
@@ -29,8 +30,6 @@ COPY bootstrap.sh /bootstrap.sh
 COPY ./etc/keystone.conf /etc/keystone/keystone.conf
 COPY ./apache.keystone.conf /etc/apache2/sites-available/keystone.conf
 COPY ./apache.keystone.conf /etc/apache2/sites-enabled/keystone.conf
-# Keystone ports
-# EXPOSE 5000 35357
 
 WORKDIR /root
 CMD sh -x /bootstrap.sh
